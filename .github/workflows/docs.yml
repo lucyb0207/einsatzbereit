@@ -43,7 +43,7 @@ jobs:
               -b html5 \
               -D build \
               docs/Architektur/Architektur.adoc
-            cp -r docs/Architektur/images build/images
+            cp -r docs/Architektur/images/. build/images/
             asciidoctor \
               -b html5 \
               -D build/ADRs \
