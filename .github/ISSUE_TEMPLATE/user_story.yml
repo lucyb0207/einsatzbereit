@@ -1,0 +1,64 @@
+name: User Story
+description: Describe a requirement from a user's perspective
+title: "[Story]: "
+labels: ["user-story"]
+assignees: []
+
+body:
+  - type: dropdown
+    id: persona
+    attributes:
+      label: Persona
+      description: Which persona does this story focus on?
+      options:
+        - Volunteer Vera
+        - Organizer Olaf
+        - Contributor Caro
+        - Maintainer Milo
+    validations:
+      required: true
+
+  - type: textarea
+    id: user_story
+    attributes:
+      label: User Story
+      description: Describe the requirement in the standard format
+      placeholder: |
+        As a <persona>
+        I want to <action / goal>
+        so that <benefit / value>
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: When is this story done? (Given/When/Then)
+      placeholder: |
+        - Given: <initial context>
+          When: <action>
+          Then: <expected outcome>
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Low
+        - Medium
+        - High
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Additional Information
+      placeholder: |
+        - Screenshots
+        - Links
+        - Context
+        - Dependencies

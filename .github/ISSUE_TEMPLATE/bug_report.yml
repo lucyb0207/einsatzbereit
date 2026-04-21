@@ -1,44 +1,70 @@
 name: Bug Report
-description: Melde einen Fehler
+description: Report a bug
 title: "[Bug]: "
 labels: ["bug"]
 assignees: []
 
 body:
   - type: dropdown
-    id: prioritaet
+    id: persona
     attributes:
-      label: Priorität
+      label: Affected Persona
+      description: Who is affected by this bug?
       options:
-        - Niedrig
-        - Mittel
-        - Hoch
+        - Volunteer Vera
+        - Organizer Olaf
+        - Contributor Caro
+        - Maintainer Milo
+        - All
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Low
+        - Medium
+        - High
     validations:
       required: true
 
   - type: textarea
-    id: beschreibung
+    id: description
     attributes:
-      label: Beschreibung
-      description: Was passiert und was sollte stattdessen passieren?
-      placeholder: Beschreibe den Fehler in wenigen Sätzen.
-    validations:
-      required: true
-
-  - type: textarea
-    id: reproduktion
-    attributes:
-      label: Schritte zur Reproduktion
-      description: So lässt sich der Fehler nachstellen
+      label: Description
+      description: What happens and what should happen instead?
       placeholder: |
-        1. Schritt 1
-        2. Schritt 2
-        3. Schritt 3
+        **Actual behaviour:** What is currently happening?
+        **Expected behaviour:** What should happen instead?
     validations:
       required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can the bug be reproduced?
+      placeholder: |
+        1. Step 1
+        2. Step 2
+        3. Step 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: In which environment does the bug occur?
+      placeholder: |
+        - Browser / Version:
+        - Operating System:
+        - Einsatzbereit Version / Branch:
 
   - type: textarea
     id: extra
     attributes:
-      label: Zusätzliche Informationen
-      placeholder: Screenshots, Logs, Links, Kontext
+      label: Additional Information
+      placeholder: Screenshots, logs, links, context
