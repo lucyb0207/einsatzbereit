@@ -6,7 +6,7 @@ using Domain.Organizations;
 using Domain.Primitives;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using Xunit;
+
 
 namespace Application.UnitTests.Organizations.UpdateOrganization;
 
@@ -23,15 +23,15 @@ public class UpdateOrganizationCommandHandlerTests
         _sut = new UpdateOrganizationCommandHandler(_dbContext);
     }
 
-    [Fact]
-    public async Task Handle_ShouldUpdateOrganization_WithAllFields()
+    [Test]
+    public async Task Handle_ShouldUpdateOrganization_WithAllFields(
+        CancellationToken cancellationToken)
     {
         // Arrange
-        var ct = TestContext.Current.CancellationToken;
         var orgId = Guid.NewGuid();
         var org = Organization.Create(new OrganizationId(orgId), "Alter Name");
 
-        _orgRepo.FindAsync(new OrganizationId(orgId), ct).Returns(org);
+        _orgRepo.FindAsync(new OrganizationId(orgId), cancellationToken).Returns(org);
 
         var command = new UpdateOrganizationCommand(
             orgId,
@@ -43,7 +43,7 @@ public class UpdateOrganizationCommandHandlerTests
             new UpdateAddressCommand("Hauptstraße", "1", "12345", "Berlin"));
 
         // Act
-        var result = await _sut.Handle(command, ct);
+        var result = await _sut.Handle(command, cancellationToken);
 
         // Assert
         result.Should().BeTrue();
@@ -57,21 +57,21 @@ public class UpdateOrganizationCommandHandlerTests
         org.Address.City.Should().Be("Berlin");
     }
 
-    [Fact]
-    public async Task Handle_ShouldClearOptionalFields_WhenNullProvided()
+    [Test]
+    public async Task Handle_ShouldClearOptionalFields_WhenNullProvided(
+        CancellationToken cancellationToken)
     {
         // Arrange
-        var ct = TestContext.Current.CancellationToken;
         var orgId = Guid.NewGuid();
         var org = Organization.Create(new OrganizationId(orgId), "Org");
 
-        _orgRepo.FindAsync(new OrganizationId(orgId), ct).Returns(org);
+        _orgRepo.FindAsync(new OrganizationId(orgId), cancellationToken).Returns(org);
 
         var command = new UpdateOrganizationCommand(
             orgId, "Org", null, null, null, null, null);
 
         // Act
-        await _sut.Handle(command, ct);
+        await _sut.Handle(command, cancellationToken);
 
         // Assert
         org.Description.Should().BeNull();
@@ -79,40 +79,40 @@ public class UpdateOrganizationCommandHandlerTests
         org.Address.Should().BeNull();
     }
 
-    [Fact]
-    public async Task Handle_ShouldThrow_WhenOrganizationNotFound()
+    [Test]
+    public async Task Handle_ShouldThrow_WhenOrganizationNotFound(
+        CancellationToken cancellationToken)
     {
         // Arrange
-        var ct = TestContext.Current.CancellationToken;
         var orgId = Guid.NewGuid();
 
-        _orgRepo.FindAsync(new OrganizationId(orgId), ct).Returns((Organization?)null);
+        _orgRepo.FindAsync(new OrganizationId(orgId), cancellationToken).Returns((Organization?)null);
 
         var command = new UpdateOrganizationCommand(
             orgId, "Name", null, null, null, null, null);
 
         // Act
-        Func<Task> act = async () => await _sut.Handle(command, ct);
+        Func<Task> act = async () => await _sut.Handle(command, cancellationToken);
 
         // Assert
         await act.Should().ThrowAsync<DomainException>();
     }
 
-    [Fact]
-    public async Task Handle_ShouldThrow_WhenNameIsEmpty()
+    [Test]
+    public async Task Handle_ShouldThrow_WhenNameIsEmpty(
+        CancellationToken cancellationToken)
     {
         // Arrange
-        var ct = TestContext.Current.CancellationToken;
         var orgId = Guid.NewGuid();
         var org = Organization.Create(new OrganizationId(orgId), "Org");
 
-        _orgRepo.FindAsync(new OrganizationId(orgId), ct).Returns(org);
+        _orgRepo.FindAsync(new OrganizationId(orgId), cancellationToken).Returns(org);
 
         var command = new UpdateOrganizationCommand(
             orgId, "   ", null, null, null, null, null);
 
         // Act
-        Func<Task> act = async () => await _sut.Handle(command, ct);
+        Func<Task> act = async () => await _sut.Handle(command, cancellationToken);
 
         // Assert
         await act.Should().ThrowAsync<DomainException>()

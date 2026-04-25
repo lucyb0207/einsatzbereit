@@ -4,7 +4,7 @@ using AwesomeAssertions;
 using Domain.Organizations;
 using Domain.VolunteerOpportunities;
 using NSubstitute;
-using Xunit;
+
 
 namespace Application.UnitTests.VolunteerOpportunities.CreateVolunteerOpportunity;
 
@@ -21,8 +21,9 @@ public class CreateVolunteerOpportunityCommandHandlerTests
         _sut = new CreateVolunteerOpportunityCommandHandler(_dbContext);
     }
 
-    [Fact]
-    public async Task Handle_ShouldCreateAndPersistOpportunity_WithCorrectData()
+    [Test]
+    public async Task Handle_ShouldCreateAndPersistOpportunity_WithCorrectData(
+        CancellationToken cancellationToken)
     {
         // Arrange
         var command = new CreateVolunteerOpportunityCommand(
@@ -35,7 +36,7 @@ public class CreateVolunteerOpportunityCommandHandlerTests
             ParticipationType.Waitlist);
 
         // Act
-        var result = await _sut.Handle(command, TestContext.Current.CancellationToken);
+        var result = await _sut.Handle(command, cancellationToken);
 
         // Assert
         result.Title.Should().Be("Helpers needed");
@@ -47,8 +48,9 @@ public class CreateVolunteerOpportunityCommandHandlerTests
         result.ParticipationType.Should().Be(ParticipationType.Waitlist);
     }
 
-    [Fact]
-    public async Task Handle_ShouldCallRepositoryAndUnitOfWork()
+    [Test]
+    public async Task Handle_ShouldCallRepositoryAndUnitOfWork(
+        CancellationToken cancellationToken)
     {
         // Arrange
         var command = new CreateVolunteerOpportunityCommand(
@@ -61,7 +63,7 @@ public class CreateVolunteerOpportunityCommandHandlerTests
             ParticipationType.IndividualContact);
 
         // Act
-        await _sut.Handle(command, TestContext.Current.CancellationToken);
+        await _sut.Handle(command, cancellationToken);
 
         // Assert
         await _dbContext

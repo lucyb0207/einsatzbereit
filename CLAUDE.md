@@ -9,7 +9,6 @@ einsatzbereit/
 ├── backend/        .NET 10 Clean Architecture API        → backend/CLAUDE.md
 ├── frontend/       Vite SPA + React 19 + Tailwind CSS 4  → frontend/CLAUDE.md
 ├── keycloak/       Custom Keycloak image + realm config  → keycloak/CLAUDE.md
-├── postgres/       DB init script                        → postgres/CLAUDE.md
 ├── docs/           arc42 architecture docs + ADRs        → docs/CLAUDE.md
 └── .github/        CI/CD workflows + issue templates     → .github/CLAUDE.md
 ```
@@ -22,15 +21,17 @@ einsatzbereit/
 | Auth | Keycloak 26.6.1 (OIDC, JWT) |
 | Frontend | Vite SPA, React 19, React Router v7, Tailwind CSS 4 |
 | API client | NSwag-generated — **never hand-edit** `api-client.ts` |
-| Tests (BE) | xUnit 3, Testcontainers, Respawn, NetArchTest |
-| Tests (FE) | Playwright (E2E only — Vitest unit tests removed post-migration) |
+| Tests (BE) | TUnit, Aspire.Hosting.Testing, Respawn, NetArchTest |
+| Tests (FE) | E2E lives in backend `tests/VisualTests/` (TUnit.Playwright + Aspire) |
 | CI/CD | GitHub Actions → GHCR |
 
 ## Development Setup
 
 ```bash
-docker compose up --build
+dotnet run --project backend/src/Aspire/AppHost
 ```
+
+Aspire AppHost provisions Postgres, Keycloak, backend API, and the Vite frontend. URLs surface in the Aspire dashboard.
 
 | Service | URL | Credentials |
 |---|---|---|

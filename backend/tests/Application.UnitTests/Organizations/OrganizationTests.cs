@@ -2,13 +2,13 @@ using AwesomeAssertions;
 using Domain.Common;
 using Domain.Organizations;
 using Domain.Primitives;
-using Xunit;
+
 
 namespace Application.UnitTests.Organizations;
 
 public class OrganizationTests
 {
-    [Fact]
+    [Test]
     public void Update_ShouldSetAllFields()
     {
         // Arrange
@@ -27,7 +27,7 @@ public class OrganizationTests
         org.Address.Should().Be(address);
     }
 
-    [Fact]
+    [Test]
     public void Update_ShouldClearAddress_WhenNullPassed()
     {
         // Arrange
@@ -41,10 +41,10 @@ public class OrganizationTests
         org.Address.Should().BeNull();
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    [InlineData(null)]
+    [Test]
+    [Arguments("")]
+    [Arguments("   ")]
+    [Arguments(null)]
     public void Update_ShouldThrow_WhenNameIsEmpty(string? name)
     {
         // Arrange
@@ -58,7 +58,7 @@ public class OrganizationTests
             .WithMessage("Name must not be empty.");
     }
 
-    [Fact]
+    [Test]
     public void Create_ShouldThrow_WhenNameIsEmpty()
     {
         var act = () => Organization.Create(new OrganizationId(Guid.NewGuid()), "");

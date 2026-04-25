@@ -5,7 +5,7 @@ using AwesomeAssertions;
 using Domain.Common;
 using Domain.Organizations;
 using NSubstitute;
-using Xunit;
+
 
 namespace Application.UnitTests.Organizations.GetOrganizationDetails;
 
@@ -23,39 +23,39 @@ public class GetOrganizationDetailsQueryHandlerTests
         _sut = new GetOrganizationDetailsQueryHandler(_dbContext, _keycloakService);
     }
 
-    [Fact]
-    public async Task Handle_ShouldReturnNull_WhenOrganizationNotFound()
+    [Test]
+    public async Task Handle_ShouldReturnNull_WhenOrganizationNotFound(
+        CancellationToken cancellationToken)
     {
         // Arrange
-        var ct = TestContext.Current.CancellationToken;
         var orgId = Guid.NewGuid();
 
-        _orgRepo.FindAsync(new OrganizationId(orgId), ct).Returns((Organization?)null);
+        _orgRepo.FindAsync(new OrganizationId(orgId), cancellationToken).Returns((Organization?)null);
 
         // Act
-        var result = await _sut.Handle(new GetOrganizationDetailsQuery(orgId), ct);
+        var result = await _sut.Handle(new GetOrganizationDetailsQuery(orgId), cancellationToken);
 
         // Assert
         result.Should().BeNull();
         await _keycloakService.DidNotReceive().GetMembersAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
     }
 
-    [Fact]
-    public async Task Handle_ShouldReturnOrganizationDetails_WithMembers()
+    [Test]
+    public async Task Handle_ShouldReturnOrganizationDetails_WithMembers(
+        CancellationToken cancellationToken)
     {
         // Arrange
-        var ct = TestContext.Current.CancellationToken;
         var orgId = Guid.NewGuid();
         var userId = Guid.NewGuid();
         var org = Organization.Create(new OrganizationId(orgId), "Feuerwehr Musterstadt");
 
-        _orgRepo.FindAsync(new OrganizationId(orgId), ct).Returns(org);
-        _keycloakService.GetMembersAsync(orgId, ct).Returns([
+        _orgRepo.FindAsync(new OrganizationId(orgId), cancellationToken).Returns(org);
+        _keycloakService.GetMembersAsync(orgId, cancellationToken).Returns([
             new KeycloakOrganizationMember(userId, "olaf", "Olaf", "Müller", "olaf@test.de", true)
         ]);
 
         // Act
-        var result = await _sut.Handle(new GetOrganizationDetailsQuery(orgId), ct);
+        var result = await _sut.Handle(new GetOrganizationDetailsQuery(orgId), cancellationToken);
 
         // Assert
         result.Should().NotBeNull();
@@ -66,21 +66,21 @@ public class GetOrganizationDetailsQueryHandlerTests
         result.Members[0].IsOrganisator.Should().BeTrue();
     }
 
-    [Fact]
-    public async Task Handle_ShouldMapAddress_WhenAddressIsPresent()
+    [Test]
+    public async Task Handle_ShouldMapAddress_WhenAddressIsPresent(
+        CancellationToken cancellationToken)
     {
         // Arrange
-        var ct = TestContext.Current.CancellationToken;
         var orgId = Guid.NewGuid();
         var org = Organization.Create(new OrganizationId(orgId), "Org");
         org.Update("Org", null, null, null, null,
             new Address("Hauptstraße", "1", "12345", "Berlin"));
 
-        _orgRepo.FindAsync(new OrganizationId(orgId), ct).Returns(org);
-        _keycloakService.GetMembersAsync(orgId, ct).Returns([]);
+        _orgRepo.FindAsync(new OrganizationId(orgId), cancellationToken).Returns(org);
+        _keycloakService.GetMembersAsync(orgId, cancellationToken).Returns([]);
 
         // Act
-        var result = await _sut.Handle(new GetOrganizationDetailsQuery(orgId), ct);
+        var result = await _sut.Handle(new GetOrganizationDetailsQuery(orgId), cancellationToken);
 
         // Assert
         result!.Address.Should().NotBeNull();
@@ -88,19 +88,19 @@ public class GetOrganizationDetailsQueryHandlerTests
         result.Address.City.Should().Be("Berlin");
     }
 
-    [Fact]
-    public async Task Handle_ShouldReturnNullAddress_WhenNoAddressSet()
+    [Test]
+    public async Task Handle_ShouldReturnNullAddress_WhenNoAddressSet(
+        CancellationToken cancellationToken)
     {
         // Arrange
-        var ct = TestContext.Current.CancellationToken;
         var orgId = Guid.NewGuid();
         var org = Organization.Create(new OrganizationId(orgId), "Org");
 
-        _orgRepo.FindAsync(new OrganizationId(orgId), ct).Returns(org);
-        _keycloakService.GetMembersAsync(orgId, ct).Returns([]);
+        _orgRepo.FindAsync(new OrganizationId(orgId), cancellationToken).Returns(org);
+        _keycloakService.GetMembersAsync(orgId, cancellationToken).Returns([]);
 
         // Act
-        var result = await _sut.Handle(new GetOrganizationDetailsQuery(orgId), ct);
+        var result = await _sut.Handle(new GetOrganizationDetailsQuery(orgId), cancellationToken);
 
         // Assert
         result!.Address.Should().BeNull();
