@@ -1,8 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
+  "extends": ["config:recommended"],
   "schedule": ["* 6 * * *"],
   "timezone": "Europe/Berlin",
   "dependencyDashboard": true,
@@ -24,8 +22,7 @@
     {
       "customType": "regex",
       "fileMatch": [
-        "^CLAUDE\\.md$",
-        "^keycloak/CLAUDE\\.md$",
+        "^(keycloak/)?CLAUDE\\.md$",
         "^docs/Architektur/src/.*\\.adoc$",
         "^docs/Architektur/images/.*\\.puml$"
       ],
